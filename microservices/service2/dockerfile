@@ -1,0 +1,18 @@
+FROM node:20.12.2
+
+# Set the working directory in the container
+WORKDIR /service2
+
+# Copy package.json and package-lock.json (if exists) to the working directory
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy the rest of the server application code
+COPY . .
+
+
+
+# Command to run the server
+CMD ["npm", "run", "start:dev"]

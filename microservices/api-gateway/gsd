@@ -1,0 +1,13 @@
+# Use the official Nginx image as the base image
+FROM nginx:latest
+
+# Set the working directory in the container
+WORKDIR /api-gateway
+
+
+# Copy the rest of the server application code
+COPY . .
+
+
+# Command to start Nginx
+CMD ["nginx", "-g", "daemon off;"]
