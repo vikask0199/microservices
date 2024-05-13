@@ -1,47 +1,26 @@
+import express from 'express';
+import { checkAuth } from './middleware/authMiddleware';
+import { service1Routes } from './routes/service1Routes';
+import { service2Routes } from './routes/service2Routes';
+import { service3Routes } from './routes/service3Routes';
 
-import { NextFunction, Request, Response } from "express";
-import gateway from "fast-gateway"
-
+const app = express();
 const PORT = 1100;
 
-const checkAuth = (req: Request, res: Response, next: NextFunction) => {
-  if (req.headers.token && req.headers.token !== '') {
-    next()
-  } else {
-    res.send({ status: 'error', mesage: 'Unauthorize' })
-  }
-}
+// Apply token validation middleware to service2 routes
+app.use('/service2', checkAuth);
 
+// Define routes
+app.use('/service1', service1Routes);
+app.use('/service2', service2Routes);
+app.use('/service3', service3Routes);
 
-const server = gateway({
-  routes: [
-    {
-      prefix: '/service1',
-      target: 'http://localhost:100',
-      hooks: {
+// Default route
+app.get('/', (req, res) => {
+    res.send('This is the API gateway');
+});
 
-      },
-      methods: ["POST", "GET"]
-    },
-    {
-      prefix: '/service2',
-      target: 'http://localhost:200',
-      middlewares: [checkAuth],
-      hooks: {
-
-      }
-    },
-    {
-      prefix: '/service3',
-      target: 'http://localhost:300'
-    }
-  ]
-})
-
-server.get('/api-gateway', (req, resp) => {
-  resp.send('this is api gateway')
-})
-
-server.start(PORT).then((server) => {
-  console.log("Api gateway is running at " + PORT)
-})
+// Start the server
+app.listen(PORT, () => {
+    console.log(`API gateway is running at http://localhost:${PORT}`);
+});
