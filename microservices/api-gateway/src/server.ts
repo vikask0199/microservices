@@ -1,13 +1,47 @@
-// service1/src/server.ts
-import express from 'express';
-import { service1Router } from './routes/router';
 
-const app = express();
+import { NextFunction, Request, Response } from "express";
+import gateway from "fast-gateway"
+
 const PORT = 1100;
 
-app.use(express.json());
-app.use('/apigateway', service1Router);
+const checkAuth = (req: Request, res: Response, next: NextFunction) => {
+  if (req.headers.token && req.headers.token !== '') {
+    next()
+  } else {
+    res.send({ status: 'error', mesage: 'Unauthorize' })
+  }
+}
 
-app.listen(PORT, () => {
-  console.log(`Service 1 running on port ${PORT}`);
-});
+
+const server = gateway({
+  routes: [
+    {
+      prefix: '/service1',
+      target: 'http://localhost:100',
+      hooks: {
+
+      },
+      methods: ["POST", "GET"]
+    },
+    {
+      prefix: '/service2',
+      target: 'http://localhost:200',
+      middlewares: [checkAuth],
+      hooks: {
+
+      }
+    },
+    {
+      prefix: '/service3',
+      target: 'http://localhost:300'
+    }
+  ]
+})
+
+server.get('/api-gateway', (req, resp) => {
+  resp.send('this is api gateway')
+})
+
+server.start(PORT).then((server) => {
+  console.log("Api gateway is running at " + PORT)
+})
