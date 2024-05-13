@@ -6,7 +6,7 @@ WORKDIR /api-gateway
 # Copy package.json and package-lock.json (if exists) to the working directory
 COPY package*.json ./
 
-# Install dependencies
+# Install dependenciesss
 RUN npm install
 
 # Copy the rest of the server application code
