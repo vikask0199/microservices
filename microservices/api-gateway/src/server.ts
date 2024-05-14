@@ -8,7 +8,7 @@ const checkAuth = (req: Request, res: Response, next: NextFunction) => {
   if (req.headers.token && req.headers.token !== '') {
     next()
   } else {
-    res.send({ status: 'error', mesage: 'Unauthorize' })
+    res.send({ status: 'error', mesage: 'Unauthorized' })
   }
 }
 
