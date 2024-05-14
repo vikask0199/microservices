@@ -17,7 +17,7 @@ const server = gateway({
   routes: [
     {
       prefix: '/service1',
-      target: 'http://localhost:100',
+      target: 'http://service1:100',
       hooks: {
 
       },
@@ -25,7 +25,7 @@ const server = gateway({
     },
     {
       prefix: '/service2',
-      target: 'http://localhost:200',
+      target: 'http://service2:200',
       middlewares: [checkAuth],
       hooks: {
 
@@ -33,7 +33,7 @@ const server = gateway({
     },
     {
       prefix: '/service3',
-      target: 'http://localhost:300'
+      target: 'http://service3:300'
     }
   ]
 })
