@@ -1,18 +1,29 @@
-import express from 'express';
-import { checkAuth } from './middleware/authMiddleware';
-
+import express, { Request, Response, NextFunction } from 'express';
+import jwt from 'jsonwebtoken';
 
 const app = express();
-const PORT = 5000;
 
-// Apply token validation middleware to service2 routes
+app.use((req: Request, res: Response, next: NextFunction) => {
+    const token = req.headers['authorization'];
 
-// Default route
-app.get('/', (req, res) => {
-    res.send('This is the API gateway');
+    if (!token) {
+        return res.status(401).send('Access Denied: No Token Provided!');
+    }
+
+    try {
+        console.log(token, "verified");
+        next();
+    } catch (err) {
+        return res.status(401).send('Access Denied: Invalid Token!');
+    }
 });
 
-// Start the server
+app.get('/validate', (req: Request, res: Response) => {
+    console.log("Ha ha ha .....")
+    res.send('Token is valid');
+});
+
+const PORT = 5000;
 app.listen(PORT, () => {
-    console.log(`API gateway is running at http://localhost:${PORT}`);
+    console.log(`Auth service is running on http://localhost:${PORT}`);
 });
